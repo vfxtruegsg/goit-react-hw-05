@@ -1,86 +1,64 @@
-import "./App.css";
-import { useState, useEffect } from "react";
-import galleryQuery from "./api-query";
-import SerchBar from "./components/SearchBar/SearchBar";
-import ImageGallery from "./components/ImageGallery/ImageGallery";
-import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
-import Loader from "./components/Loader/Loader";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
-import ImageModal from "./components/ImageModal/ImageModal";
+import { Route, Routes, NavLink } from "react-router-dom";
+import clsx from "clsx";
+import { lazy, Suspense } from "react";
+import { Puff } from "react-loader-spinner";
 
-import toast from "react-hot-toast";
+import css from "./App.module.css";
+
+import HomePage from "./pages/HomePage/HomePage";
+// import MoviesPage from "./pages/MoviesPage/MoviesPage";
+// import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+// import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
+// import MovieCast from "./components/MovieCast/MovieCast";
+// import MovieReviews from "./components/MovieReviews/MovieReviews";
+
+const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
+const MovieDetailsPage = lazy(() =>
+  import("./pages/MovieDetailsPage/MovieDetailsPage")
+);
+const MovieCast = lazy(() => import("./components/MovieCast/MovieCast"));
+const MovieReviews = lazy(() =>
+  import("./components/MovieReviews/MovieReviews")
+);
 
 function App() {
-  const [articles, setArticles] = useState([]);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState({});
-
-  useEffect(() => {
-    const getArticlesData = async () => {
-      try {
-        if (query === "") {
-          return;
-        }
-        setError(false);
-        setLoading(true);
-
-        const { results } = await galleryQuery(query, page);
-        setArticles((prev) => [...prev, ...results]);
-      } catch (error) {
-        setError(true);
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getArticlesData();
-  }, [query, page]);
-
-  const handleNewQuery = (newQuery) => {
-    if (query === newQuery) {
-      toast.error("Enter please new request!");
-
-      return;
-    }
-    setPage(1);
-    setQuery(newQuery);
-    setArticles([]);
-  };
-
-  const handleUpPage = () => {
-    setPage(page + 1);
-  };
-
-  const openModal = (image) => {
-    setIsOpen(true);
-    setSelectedImage(image);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setSelectedImage(null);
+  const linkActiveStyle = ({ isActive }) => {
+    return clsx(css.link, isActive && css.active);
   };
 
   return (
-    <>
-      <SerchBar onSubmit={handleNewQuery} />
-      {loading && <Loader />}
-      {error ? (
-        <ErrorMessage />
-      ) : (
-        <ImageGallery articles={articles} onImageClick={openModal} />
-      )}
-      <ImageModal
-        isOpen={modalIsOpen}
-        onClose={closeModal}
-        image={selectedImage}
-      />
-      {articles.length > 0 && <LoadMoreBtn click={handleUpPage} />}
-    </>
+    <div style={{ position: "relative" }}>
+      <Suspense
+        fallback={
+          <div className={css.fallback}>
+            <Puff color="#611f1f" />
+          </div>
+        }
+      >
+        <nav className={css.navigation}>
+          <NavLink to="/" className={linkActiveStyle}>
+            Home
+          </NavLink>
+          <NavLink to="/movies" className={linkActiveStyle}>
+            Movies
+          </NavLink>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+
+          <Route path="/movies" element={<MoviesPage />} />
+
+          <Route path="/movies/:moviesId" element={<MovieDetailsPage />}>
+            <Route path="cast" element={<MovieCast />} />
+            <Route path="reviews" element={<MovieReviews />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </div>
   );
 }
 

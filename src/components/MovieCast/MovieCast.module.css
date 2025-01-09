@@ -1,0 +1,19 @@
+.actor-list {
+  padding-left: 24px;
+  padding-bottom: 48px;
+}
+
+.actor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 36px;
+}
+
+.no-reviews-err {
+  text-align: center;
+  padding-bottom: 48px;
+  font-size: 22px;
+  color: #611f1f;
+}

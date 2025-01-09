@@ -1,14 +1,43 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "https://api.unsplash.com/search/photos/";
-const API_KEY = "pKIAwE9KyTsEnrob5fln_hxBalBluAFHdAGnBFGOt-k";
+const options = {
+  headers: {
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMGI4YWJmNmZjZWU3NWM0NTUwOGZjODkyNDY5NmU0MSIsIm5iZiI6MTczNjQwOTU0OC44OTYsInN1YiI6IjY3N2Y4MWNjMTQzMWUwNTkxYWJhZjdjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RqCVHKE5gyscoklcvaccbOiseY8wlw0l-kSqMOXvIrc",
+  },
+};
 
-const galleryQuery = async (topic, page) => {
+export const getMovies = async () => {
   const { data } = await axios.get(
-    `?client_id=${API_KEY}&query=${topic}&page=${page}`
+    "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
+    options
+  );
+  return data;
+};
+
+export const getInfMovie = async (movieID) => {
+  const data = await axios.get(
+    `https://api.themoviedb.org/3/movie/${movieID}?language=en-US`,
+    options
   );
 
   return data;
 };
 
-export default galleryQuery;
+export const getCastMovie = async (movieID) => {
+  const data = await axios.get(
+    `https://api.themoviedb.org/3/movie/${movieID}/credits?language=en-US`,
+    options
+  );
+
+  return data;
+};
+
+export const getReviewsMovie = async (movieID) => {
+  const data = await axios.get(
+    `https://api.themoviedb.org/3/movie/${movieID}/reviews?language=en-US`,
+    options
+  );
+
+  return data;
+};
