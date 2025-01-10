@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { getInfMovie } from "../../api-query";
 import css from "./MovieDetailsPage.module.css";
 import { Puff } from "react-loader-spinner";
@@ -9,6 +15,9 @@ const MovieDetailsPage = () => {
   const { moviesId } = useParams();
   const [infMovie, setInfMovie] = useState([]);
   const [loader, setLoader] = useState(false);
+  const location = useLocation();
+  const goBackRef = useRef(location.state ?? "/movies");
+  console.log(location);
 
   useEffect(() => {
     try {
@@ -27,8 +36,8 @@ const MovieDetailsPage = () => {
   }, [moviesId]);
   return (
     <div style={{ position: "relative" }}>
-      <NavLink to="/">
-        <button className={css.back}>Go back</button>
+      <NavLink className={css.back} to={goBackRef.current}>
+        Go back
       </NavLink>
 
       {loader && (

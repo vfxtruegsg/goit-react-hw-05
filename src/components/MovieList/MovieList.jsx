@@ -1,12 +1,20 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import css from "./MovieList.module.css";
 
 const MovieList = ({ movies }) => {
+  const location = useLocation();
+
+  console.log(location);
+
   return (
     <ul className={css["movie-list"]}>
       {movies.map((item, index) => (
         <li key={item.id}>
-          <NavLink to={`/movies/${item.id}`} className={css["movie-link"]}>
+          <NavLink
+            to={`/movies/${item.id}`}
+            className={css["movie-link"]}
+            state={location}
+          >
             {index + 1}. <span className={css.title}>{item.title}</span>
           </NavLink>
         </li>
