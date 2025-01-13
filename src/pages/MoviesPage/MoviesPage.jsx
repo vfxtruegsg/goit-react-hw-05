@@ -4,21 +4,16 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import MovieList from "../../components/MovieList/MovieList";
 import { searchMovieOnKeyWord } from "../../api-query";
+import { useSearchParams } from "react-router-dom";
 
 const MoviesPage = () => {
-  const initialValues = {
-    movieQuery: "",
-  };
-
-  const [query, setQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const movie = searchParams.get("movie") ?? "";
+  const [query, setQuery] = useState(movie);
   const [dataMovie, setDataMovie] = useState([]);
 
-  const handleSubmit = (values) => {
-    if (!values.movieQuery) {
-      toast.error("Field is empty, please enter your query...");
-      return;
-    }
-    setQuery(values.movieQuery);
+  const initialValues = {
+    movieQuery: movie,
   };
 
   useEffect(() => {
@@ -36,6 +31,15 @@ const MoviesPage = () => {
     }
   }, [query]);
 
+  const handleSubmit = (values) => {
+    if (!values.movieQuery) {
+      toast.error("Field is empty, please enter your query...");
+      return;
+    }
+    setQuery(values.movieQuery);
+    setSearchParams({ movie: values.movieQuery });
+  };
+
   return (
     <div>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
@@ -52,7 +56,7 @@ const MoviesPage = () => {
         </Form>
       </Formik>
 
-      <MovieList movies={dataMovie} query={query} />
+      {dataMovie && <MovieList movies={dataMovie} />}
     </div>
   );
 };

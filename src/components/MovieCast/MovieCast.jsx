@@ -7,25 +7,30 @@ import css from "./MovieCast.module.css";
 const MovieCast = () => {
   const { moviesId } = useParams();
   const [castMovie, setCastMovie] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    try {
-      const queryMovieCast = async () => {
+    const queryMovieCast = async () => {
+      try {
+        setLoader(true);
         const {
           data: { cast },
         } = await getCastMovie(moviesId);
 
         setCastMovie(cast);
-      };
-      queryMovieCast();
-    } catch (error) {
-      toast.error(error);
-    }
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoader(false);
+      }
+    };
+    queryMovieCast();
   }, [moviesId]);
 
   return (
     <div>
-      {castMovie.length ? (
+      {loader && <p className={css["no-reviews-err"]}>Wait...</p>}
+      {castMovie.length && (
         <ul className={css["actor-list"]}>
           {castMovie.map((item, index) => (
             <li key={index}>
@@ -38,8 +43,6 @@ const MovieCast = () => {
             </li>
           ))}
         </ul>
-      ) : (
-        <p className={css["no-reviews-err"]}>No information about actors</p>
       )}
     </div>
   );

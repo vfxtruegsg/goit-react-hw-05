@@ -7,37 +7,39 @@ import css from "./MovieReviews.module.css";
 const MovieReviews = () => {
   const { moviesId } = useParams();
   const [reviewMovie, setReviewMovie] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    try {
-      const queryMovieReviews = async () => {
+    const queryMovieReviews = async () => {
+      try {
+        setLoader(true);
         const {
           data: { results },
         } = await getReviewsMovie(moviesId);
         setReviewMovie(results);
-      };
-      queryMovieReviews();
-    } catch (error) {
-      toast.error(error);
-    }
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoader(false);
+      }
+    };
+    queryMovieReviews();
   }, [moviesId]);
 
   return (
     <div>
-      {reviewMovie.length ? (
-        <ul className={css["reviews-list"]}>
-          {reviewMovie.map((item, index) => (
-            <li key={index} className={css["reviews-item"]}>
-              <h3>
-                {index + 1}. User: {item.author}
-              </h3>
-              <p style={{ maxWidth: "95%" }}>{item.content}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className={css["no-reviews-err"]}>No information about reviews</p>
-      )}
+      {loader && <p className={css["no-reviews-err"]}>Wait...</p>}
+
+      <ul className={css["reviews-list"]}>
+        {reviewMovie.map((item, index) => (
+          <li key={index} className={css["reviews-item"]}>
+            <h3>
+              {index + 1}. User: {item.author}
+            </h3>
+            <p style={{ maxWidth: "95%" }}>{item.content}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

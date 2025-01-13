@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  NavLink,
-  Outlet,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { NavLink, Outlet, useLocation, useParams } from "react-router-dom";
 import { getInfMovie } from "../../api-query";
 import css from "./MovieDetailsPage.module.css";
 import { Puff } from "react-loader-spinner";
@@ -17,7 +11,6 @@ const MovieDetailsPage = () => {
   const [loader, setLoader] = useState(false);
   const location = useLocation();
   const goBackRef = useRef(location.state ?? "/movies");
-  console.log(location);
 
   useEffect(() => {
     try {

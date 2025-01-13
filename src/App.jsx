@@ -1,16 +1,9 @@
-import { Route, Routes, NavLink } from "react-router-dom";
-import clsx from "clsx";
+import { Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { Puff } from "react-loader-spinner";
-
 import css from "./App.module.css";
-
 import HomePage from "./pages/HomePage/HomePage";
-// import MoviesPage from "./pages/MoviesPage/MoviesPage";
-// import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
-// import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
-// import MovieCast from "./components/MovieCast/MovieCast";
-// import MovieReviews from "./components/MovieReviews/MovieReviews";
+import Navigation from "./components/Navigation/Navigation";
 
 const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
@@ -23,10 +16,6 @@ const MovieReviews = lazy(() =>
 );
 
 function App() {
-  const linkActiveStyle = ({ isActive }) => {
-    return clsx(css.link, isActive && css.active);
-  };
-
   return (
     <div style={{ position: "relative" }}>
       <Suspense
@@ -36,14 +25,7 @@ function App() {
           </div>
         }
       >
-        <nav className={css.navigation}>
-          <NavLink to="/" className={linkActiveStyle}>
-            Home
-          </NavLink>
-          <NavLink to="/movies" className={linkActiveStyle}>
-            Movies
-          </NavLink>
-        </nav>
+        <Navigation />
 
         <Routes>
           <Route path="/" element={<HomePage />} />
