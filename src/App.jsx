@@ -18,6 +18,7 @@ const MovieReviews = lazy(() =>
 function App() {
   return (
     <div style={{ position: "relative" }}>
+      <Navigation />
       <Suspense
         fallback={
           <div className={css.fallback}>
@@ -25,8 +26,6 @@ function App() {
           </div>
         }
       >
-        <Navigation />
-
         <Routes>
           <Route path="/" element={<HomePage />} />
 
